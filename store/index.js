@@ -2,17 +2,22 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-
 const store = new Vuex.Store({
 	state: {
-		userInfo:{}
+		token: uni.getStorageSync('token'),
+		userid: uni.getStorageSync('userid'),
+		username: uni.getStorageSync('username'),
+		senduser: uni.getStorageSync('senduser')
 	},
 	getters: {
 
 	},
 	mutations: {
-		setUserInfo(state,newValue){
-			state.userInfo = newValue
+		clearData(state) {
+			state.token = '';
+			state.userid = '';
+			state.username = '';
+			state.senduser = []
 		}
 	},
 	actions: {
