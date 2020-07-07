@@ -4,9 +4,7 @@
 			<view class="title">{{item.title}}</view>
 			<view class="box">
 				<view class="list" v-for="(val,i) in item.list" :key="i" @tap="navTo">
-					<view class="img">
-						<video class="video" src="rtmp://192.168.2.98:1935/live/robot" autoplay></video>
-					</view>
+					<view class="img"></view>
 					<view style="padding-left: 20rpx;">摄像头{{i}}</view>
 				</view>
 			</view>
@@ -58,11 +56,8 @@
 				line-height: 65rpx;
 				border-radius: 0 0 8rpx 8rpx;
 				.img{
+					background-color: #387ce0;
 					height: 202rpx;
-					.video{
-						width: 100%;
-						height: 100%;
-					}
 				}
 				
 			}

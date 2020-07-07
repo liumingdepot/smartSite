@@ -1,121 +1,135 @@
 <template>
-	<view>
-		<!-- 主体表单 -->
-		<view class="main1">
-			<view class="item">
-				<input v-model="userName" class="main-input" placeholder="请输入账号" />
-			</view>
-			<view class="item">
-				<input v-model="password" class="main-input" type="password" placeholder="请输入密码" />
-			</view>
+	<view class="login">
+		<view class="title">欢迎登录</view>
+		<view class="text">智慧工地-天马项目</view>
+		<view class="item" :style="{'border-bottom-color': borderColor1}">
+			<image src="/static/login/1.png" mode=""></image>
+			<input type="text" v-model="username" placeholder="请输入用户名" :placeholder-style="{color:'#aaaaaa'}"
+			@focus="borderColor1 = '#568fe4'" @blur="borderColor1 = '#e5e5e5'"/>
 		</view>
-		<view class="btn_login" @click="startLogin">登录</view>
+		<view class="item" :style="{'border-bottom-color': borderColor2}">
+			<image src="/static/login/2.png" mode=""></image>
+			<input :type="type" v-model="password" placeholder="请输入密码" :placeholder-style="{color:'#aaaaaa'}"
+			@focus="borderColor2 = '#568fe4'" @blur="borderColor2 = '#e5e5e5'"/>
+			<image :src="type == 'password'?'/static/login/3.png':'/static/login/4.png'" 
+			@tap="type = type == 'text'?'password':'text'"></image>
+		</view>
+		<view class="btn" @tap="applogin">登录</view>
+		<view class="back" @tap="back">
+			<image src="/static/login/back.jpg" mode=""></image>
+			<view>退出登录</view>
+		</view>
 	</view>
 </template>
 
 <script>
+	import {
+		login
+	} from './server.js'
 	export default {
 		data() {
 			return {
-				userName:'',
-				password:''
+				borderColor1:'#e5e5e5',
+				borderColor2:'#e5e5e5',
+				type:'password',
+				username: '',
+				password: '',
 			};
 		},
-		methods:{
-			startLogin(){
-				console.log(this.password,this.userName);
+		onLoad() {
+			this.username = uni.getStorageSync('username');
+			this.password = uni.getStorageSync('password');
+		},
+		methods: {
+			applogin() {
+				login({
+					username:this.username,
+					password:this.password
+				}).then(res=>{
+					if(res.code == 1){
+						uni.showToast({
+							title: '登录成功',
+							icon: 'none'
+						})
+						uni.setStorageSync('senduser', res.senduser);
+						uni.setStorageSync('token', res.token);
+						uni.setStorageSync('userid', res.userid);
+						uni.setStorageSync('name', res.username);
+						uni.setStorageSync('username', this.username);
+						uni.setStorageSync('password', this.password);
+						uni.navigateTo({
+							url:'/pages/index/index',
+						})
+					}else{
+						uni.showToast({
+							title:'用户名或密码错误，请稍后再试',
+							icon:"none"
+						})
+					}
+				})
+			},
+			back(){
+				this.username = ''
+				this.password =  ''
+				uni.clearStorageSync();
+				this.$store.commit('clearData')
 			}
 		}
 	}
 </script>
-
-<style lang="scss" scoped>
-	.type {
-		display: flex;
-		margin-left: 16px;
-		border-bottom: 1px solid #eeeeee;
-		width: 100%;
-	}
-
-	.title_des {
-		font-weight: bold;
-		color: #0055b8;
-		font-size: 22px;
-		margin-bottom: 32px;
-	}
-
-	.login_icon_wx {
-		color: #999999;
-		border: none;
-	}
-
-	.weixinLogin {
-		color: #999999;
-		text-align: center;
-		font-size: 12px;
-		margin-top: 60px;
-		left: auto;
-		right: auto;
-	}
-
-	.footer_des {
-		color: #666666;
-		text-align: center;
-		font-size: 14px;
-		margin-top: 40px;
-	}
-
-	.getCode {
-		font-size: 14px;
-		margin-left: 40px;
-		color: #0055b8;
-	}
-
-	.item {
-		line-height: 40px;
-		display: flex;
-	}
-
-	.login_image {
-		margin-top: 8px;
-		width: 20px;
-		height: 25px;
-	}
-
-	.main-input {
-		font-size: 14px;
-		margin-left: 16px;
-		border-bottom: 1px solid #eeeeee;
-		height: 40px;
-		line-height: 40px;
-	}
-
-	.main-input-code {
-		width: 70%;
-		font-size: 14px;
-		height: 40px;
-		line-height: 40px;
-	}
-
-	.btn_login {
-		color: #ffffff;
-		font-size: 16px;
-		width: 260px;
-		height: 40px;
-		background: #0055b8;
-		border-radius: 8px;
-		line-height: 40px;
-		text-align: center;
-		margin-left: auto;
-		margin-right: auto;
-		margin-top: 45px;
-	}
-
-	.main-input {
-		flex: 1;
-		text-align: left;
-		font-size: 28 upx;
-		padding-right: 10 upx;
-		margin-left: 20 upx;
+<style>
+	page{
+		background-color: #ffffff;
 	}
 </style>
+<style lang="scss" scoped>
+.login{
+	width: 100%;
+	box-sizing: border-box;
+	padding: $height 50rpx;
+	.title{
+		font-size: 46rpx;
+		padding: 60rpx 0 38rpx 0;
+		font-weight: bolder;
+	}
+	.text{
+		font-size: 32rpx;
+		padding-bottom: 72rpx;
+		color: #568fe4;
+	}
+	.item{
+		height: 120rpx;
+		border-bottom: 2rpx solid #e5e5e5;
+		display: grid;
+		align-items: center;
+		grid-template-columns: 100rpx auto 100rpx;
+		image{
+			width: 60rpx;
+			height: 60rpx;
+		}
+	}
+	.btn{
+		margin-top: 90rpx;
+		width: 650rpx;
+		line-height: 100rpx;
+		background-color: #568fe4;
+		text-align: center;
+		color: #fff;
+	}
+	.back{
+		position: fixed;
+		width: 650rpx;
+		bottom: 100rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: #568fe4;
+		image{
+			margin-right: 20rpx;
+			width: 40rpx;
+			height: 20rpx;
+		}
+	}
+}
+</style>
+
