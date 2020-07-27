@@ -62,7 +62,7 @@
 			<view class="main" v-if="surgeryshow == '有'">
 				<view class="item" v-for="(item,index) in surgery" :key="index">
 					<view class="surgery">手术名称：<input type="text" v-model="item.operation" /></view>
-					<view class="surgery">时间：<input type="text" v-model="item.operationtime" /></view>
+					<view class="surgery" @click="showChange(index)">时间：{{item.operationtime||'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}}</view>
 				</view>
 				<view class="item" @tap="addSurgery">
 					<image src="/static/image/add.png" mode=""></image>
@@ -70,7 +70,8 @@
 				</view>
 			</view>
 		</view>
-
+	
+		<u-calendar v-model="show" mode="date" @change="changeDate"></u-calendar>
 		<view class="btn" @tap="appSave">保存</view>
 	</view>
 </template>
@@ -80,6 +81,8 @@
 		props:['healJson'],
 		data() {
 			return {
+				show:false,
+				index:0,
 				//血型
 				blood: 'A型',
 				bloodArr: ['A型', 'B型', 'AB型', 'O型', '不详'],
@@ -112,6 +115,17 @@
 			this.surgery = this.healJson.operationJson;
 		},
 		methods: {
+			showChange(index){
+				this.index = index
+				this.show = true
+			},
+			changeDate(e){
+				this.$set(this.surgery,this.index,{
+					...this.surgery[this.index],
+					operationtime:e.result
+				})
+			},
+			
 			//血型
 			changeBlood(blood) {
 				this.blood = blood

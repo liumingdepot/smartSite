@@ -9,7 +9,7 @@
 			<view class="item">赶快填写吧！</view>
 		</view>
 		<view class="img">
-			
+			<image src="/static/image/null.png" mode=""></image>
 		</view>
 		<view class="btn" @tap="btn">开始填报</view>
 	</view>
@@ -36,12 +36,15 @@
 
 <style scoped lang="scss">
 .none{
+	min-height: 100vh;
+	background-color: #F0F4FB;
 	width: 750rpx;
 	.header{
 		position: fixed;
 		width: 100%;
 		height: 120rpx;
 		padding-top: $height;
+		box-sizing: content-box;
 		display: grid;
 		grid-template-columns: 50rpx auto;
 		text-align: center;
@@ -65,7 +68,10 @@
 		}
 	}
 	.img{
-		height: 620rpx;
+		padding: 50rpx 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 	.btn{
 		color: #6f9fe7;

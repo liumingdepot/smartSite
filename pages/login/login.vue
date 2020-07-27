@@ -1,7 +1,7 @@
 <template>
 	<view class="login">
 		<view class="title">欢迎登录</view>
-		<view class="text">智慧工地-天马项目</view>
+		<view class="text">智慧工地</view>
 		<view class="item" :style="{'border-bottom-color': borderColor1}">
 			<image src="/static/login/1.png" mode=""></image>
 			<input type="text" v-model="username" placeholder="请输入用户名" :placeholder-style="{color:'#aaaaaa'}"
@@ -42,6 +42,9 @@
 		},
 		methods: {
 			applogin() {
+				uni.showLoading({
+					title:'加载中'
+				})
 				login({
 					username:this.username,
 					password:this.password
@@ -60,6 +63,7 @@
 						uni.navigateTo({
 							url:'/pages/index/index',
 						})
+						uni.hideLoading()
 					}else{
 						uni.showToast({
 							title:'用户名或密码错误，请稍后再试',

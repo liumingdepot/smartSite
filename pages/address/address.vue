@@ -1,7 +1,7 @@
 <template>
 	<view class="address">
 		<view class="header">
-			<image src="/static/image/back1.png" mode=""></image>
+			<image src="/static/image/back1.png" @tap="back"></image>
 			<view class="input">
 				<input type="text" v-model="value" placeholder="请输入联系人姓名" placeholder-style="color:#387ce0" @input="changeInput"/>
 			</view>
@@ -9,9 +9,10 @@
 		<view class="main">
 			<view class="top"></view>
 			<view class="item" v-for="item in address" :key="item.cellphone" @tap="cellphone(item.cellphone)">
-				<image src="/static/avatar.jpg" mode=""></image>
+				<image class="image1" src="/static/avatar.jpg" mode=""></image>
 				<view>{{item.username}}</view>
 				<view>{{item.cellphone}}</view>
+				<image class="image2" src="/static/image/phone.png" mode=""></image>
 			</view>
 		</view>
 	</view>
@@ -36,6 +37,9 @@
 				uni.makePhoneCall({
 				    phoneNumber
 				});
+			},
+			back(){
+				uni.navigateBack()
 			},
 			changeInput(e){
 				const value = e.target.value
@@ -89,13 +93,17 @@
 		.item{
 			padding: 0 30rpx;
 			display: grid;
-			grid-template-columns: 100rpx 400rpx 180rpx;
+			grid-template-columns: 100rpx 300rpx 220rpx 80rpx;
 			height: 120rpx;
 			align-items: center;
 			border-bottom: 2rpx solid #e5e5e5;
-			image{
+			.image1{
 				width: 80rpx;
 				height: 80rpx;
+			}
+			.image2{
+				width: 50rpx;
+				height: 50rpx;
 			}
 		}
 	}

@@ -14,7 +14,7 @@
 				<view class="right">
 					<view class="box">
 						<view class="name">{{item.creatname}}</view>
-						<view :class="item.taskstatus == 1?'completed':'undone'">{{item.taskstatus == 1?'已完成':'未完成'}}</view>
+						<view v-if="index == 2" :class="item.taskstatus == 1?'completed':'undone'">{{item.taskstatus == 1?'已完成':'未完成'}}</view>
 					</view>
 					<view class="title">{{item.taskcontent}}</view>
 					<view class="img" v-for="(img,i) in item.imgs" :key="i" @tap="previewImage(item.imgs,i)">
@@ -28,8 +28,8 @@
 					</view>
 					<view class="bottom" v-if="index == 2">
 						<view>修改状态</view>
-						<u-switch v-model="item.taskstatus" v-if="index == 2" @change="switchChange(item)"></u-switch>
-						<!-- <switch class="switch" :checked=" == 1?true:false" v-if="index == 2" @change="switchChange(item)" /> -->
+						<!-- <u-switch v-model="item.taskstatus" v-if="index == 2" @change="switchChange(item)"></u-switch> -->
+						<switch class="switch" :checked="item.taskstatus == 1?true:false" @change="switchChange(item)" />
 					</view>
 				</view>
 			</view>

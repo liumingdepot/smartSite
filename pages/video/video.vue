@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<video class="video" :src="url" autoplay :controls="false" :show-fullscreen-btn="true"></video>
+		<video class="video":src="url" autoplay :controls="true" :show-fullscreen-btn="true"></video>
 	</view>
 </template>
 
@@ -8,8 +8,15 @@
 	export default {
 		data() {
 			return {
-				url: 'rtmp://192.168.2.98:1935/live/robot'
+				url: ''
 			};
+		},
+		onLoad(obj) {
+			console.log(obj)
+			uni.setNavigationBarTitle({
+			    title: obj.title
+			});
+			this.url = obj.url
 		}
 	}
 </script>
