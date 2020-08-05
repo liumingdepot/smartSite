@@ -9,8 +9,10 @@
 			</view>
 			<progress class="progress" :percent="20" stroke-width="10" backgroundColor="#5f95e4" activeColor="#4ddda3" />
 		</view>
+		<!-- 头部轮播 -->
 		<view class="environmental">
 			<swiper :indicator-dots="true" class="swiper" indicator-active-color="#5f95e4">
+				<!-- 今日环境指数 -->
 				<swiper-item>
 					<view class="swiper-item">
 						<wiew class="top">
@@ -21,54 +23,94 @@
 							<view class="right">{{ todayDate.time }}</view>
 						</wiew>
 						<view class="data1">
-							<view class="item">
-								<view>{{ todayDate['噪音'] || 0 }}</view>
-								<view class="name">噪音</view>
-							</view>
-							<view class="item">
-								<view>{{ todayDate['PM25'] || 0 }}</view>
-								<view class="name">PM2.5</view>
-							</view>
-							<view class="item">
-								<view>{{ todayDate['PM10'] || 0 }}</view>
-								<view class="name">PM10</view>
+							<view class="item" v-for="(item, index) in todayDate.todayDate1" :key="index">
+								<view>{{ item.itemavgvalue }}</view>
+								<view class="name">{{ item.itemname }}</view>
 							</view>
 						</view>
 						<view class="data2">
-							<view class="item">
-								<view>{{ todayDate['NOx'] || 0 }}</view>
-								<view class="name">NOx</view>
-							</view>
-							<view class="item">
-								<view>{{ todayDate['VOCs'] || 0 }}</view>
-								<view class="name">VOCs</view>
-							</view>
-							<view class="item">
-								<view>{{ todayDate['NOx'] || 0 }}</view>
-								<view class="name">NOx</view>
+							<view class="item" v-for="(item, index) in todayDate.todayDate2" :key="index">
+								<view>{{ item.itemavgvalue }}</view>
+								<view class="name">{{ item.itemname }}</view>
 							</view>
 						</view>
 					</view>
 				</swiper-item>
+				<!-- 实时进场人数 -->
 				<swiper-item>
 					<view class="swiper-item">
 						<wiew class="top">
 							<view class="left">
 								<image src="/static/image/b3.png" mode=""></image>
-								<view>实时经常人数</view>
+								<view>实时进场人数</view>
 							</view>
-							<view class="right">1小时前</view>
+							<view class="right" @tap="navTo('/pages/attendance/attendance')">查看详情</view>
 						</wiew>
+						<view style="padding: 0 110rpx;display: flex;align-items: center;justify-content: space-between;height: 300rpx;">
+							<view>
+								<view style="color: #387ce0;margin-bottom: 30rpx;text-align: center;">
+									<text style="font-size: 50rpx;">{{ attendance.total }}</text>
+									<text style="font-size: 30rpx;">&nbsp;&nbsp;&nbsp;&nbsp;人</text>
+								</view>
+								<view style="padding: 8rpx 12rpx;color: #fff;background-color: #a5b8e2;">工程总人数</view>
+							</view>
+							<view style="width: 4rpx;height: 200rpx;background-color: #e5e5e5;"></view>
+							<view>
+								<view style="color: #26bf82;margin-bottom: 30rpx;text-align: center;">
+									<text style="font-size: 50rpx;">{{ attendance.enter }}</text>
+									<text style="font-size: 30rpx;">&nbsp;&nbsp;&nbsp;&nbsp;人</text>
+								</view>
+								<view style="padding: 8rpx 12rpx;color: #fff;background-color: #a5b8e2;">进场人数</view>
+							</view>
+						</view>
+					</view>
+				</swiper-item>
+				<!-- 无人机检测数据 -->
+				<swiper-item>
+					<view class="swiper-item">
+						<wiew class="top">
+							<view class="left">
+								<image src="/static/image/b3.png" mode=""></image>
+								<view>无人机检测数据</view>
+							</view>
+							<view class="right" @tap="navTo('/pages/drone/drone')">查看详情</view>
+						</wiew>
+						<view class="data1">
+							<view class="item" v-for="(item, index) in getUdpData.getUdpData1" :key="index">
+								<view>{{ item.itemavgvalue }}</view>
+								<view class="name">{{ item.itemname }}</view>
+							</view>
+						</view>
+						<view class="data2">
+							<view class="item" v-for="(item, index) in getUdpData.getUdpData2" :key="index">
+								<view>{{ item.itemavgvalue }}</view>
+								<view class="name">{{ item.itemname }}</view>
+							</view>
+						</view>
 					</view>
 				</swiper-item>
 			</swiper>
 		</view>
+		<!-- banner -->
+		<swiper class="swiper-banner" autoplay>
+			<swiper-item>
+				<view class="banner-item"><image src="/static/banner.png" mode=""></image></view>
+			</swiper-item>
+			<swiper-item>
+				<view class="banner-item"><image src="/static/banner.png" mode=""></image></view>
+			</swiper-item>
+			<swiper-item>
+				<view class="banner-item"><image src="/static/banner.png" mode=""></image></view>
+			</swiper-item>
+		</swiper>
+		<!-- 导航 -->
 		<view class="navBar">
 			<view class="item" v-for="(item, index) in nav" :key="index" @tap="navTo(item.path)">
 				<image :src="item.img"></image>
 				<view>{{ item.title }}</view>
 			</view>
 		</view>
+		<!-- 实时监控 -->
 		<view class="monitor">
 			<wiew class="top">
 				<view class="left">
@@ -78,12 +120,13 @@
 				<view class="right" @tap="navTo('/pages/monitor/monitor')">更多</view>
 			</wiew>
 			<view class="scroll">
-				<view class="img" v-for="(item,index) in monitors" :key="index" @tap="navTo('/pages/video/video')">
-					<image src="/static/image/w.jpg" style="width: 100%;height: 100%;" alt=""></image>
+				<view class="img" v-for="(item, index) in monitors" :key="index" @tap="navToVideo(item)">
+					<image :src="item.img" style="width: 100%;height: 100%;" alt=""></image>
 				</view>
 			</view>
 		</view>
-		<view class="task" v-if="task.length>0">
+		<!-- 我的任务 -->
+		<view class="task" v-if="task.length > 0">
 			<view class="top">我的任务（{{ task.length }}）</view>
 			<view class="main">
 				<view class="item" v-for="(item, index) in task" :key="index">
@@ -103,7 +146,7 @@
 </template>
 
 <script>
-import { taskAppList, todayDate, project } from './server.js';
+import { taskAppList, todayDate, project, getAccessToken, getList, getVideoImg, attendance,getUdpData } from './server.js';
 export default {
 	data() {
 		return {
@@ -134,18 +177,13 @@ export default {
 					path: '/pages/address/address'
 				}
 			],
-			monitors: [
-				{
-					url: 'rtmp://rtmp01open.ys7.com/openlive/447a66d861bb4bd28d85d082393d3ac5'
-				},
-				{
-					url: 'rtmp://rtmp01open.ys7.com/openlive/447a66d861bb4bd28d85d082393d3ac5'
-				}
-			],
+			getUdpData:{},
+			monitors: [],
 			task: [],
 			todayDate: {},
 			project: {},
-			loading: true
+			loading: true,
+			attendance: {}
 		};
 	},
 	onLoad() {
@@ -153,14 +191,45 @@ export default {
 	},
 	methods: {
 		async initData() {
+			uni.showLoading({
+				title: '加载中',
+				icon: 'none'
+			});
 			const data = await taskAppList();
 			for (let item of data.mytask) {
 				item.imgs = item.taskimg.split(',');
 			}
 			this.task = data.mytask;
 			this.todayDate = await todayDate();
+
+			this.getUdpData = await getUdpData();
+
 			this.project = await project();
 			this.loading = false;
+
+			const accessToken = await getAccessToken();
+			const monitorsVideo = await getList(accessToken);
+			const videoImg = await getVideoImg();
+			for (let item of monitorsVideo) {
+				for (let val of videoImg) {
+					if (val.tdh == item.channelNo) {
+						this.monitors.push({
+							...item,
+							name: val.tdmc,
+							img: val.imgurl
+						});
+					}
+				}
+			}
+			this.monitors.length = 2;
+			uni.hideLoading();
+
+			this.attendance = await attendance();
+		},
+		navToVideo(val) {
+			uni.navigateTo({
+				url: `/pages/video/video?url=${val.liveAddress}&name=${val.name}`
+			});
 		},
 		previewImage(imgs, index) {
 			let newImg = imgs.splice(index, imgs.length - index);
@@ -259,7 +328,7 @@ export default {
 					}
 
 					.right {
-						color: #999;
+						color: #387ce0;
 					}
 				}
 
@@ -309,7 +378,18 @@ export default {
 			}
 		}
 	}
-
+	.swiper-banner {
+		background-color: #f0f4fb;
+		width: 100%;
+		.banner-item {
+			padding: 28rpx 14rpx 0 14rpx;
+			height: 260rpx;
+			image {
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
 	.navBar {
 		height: 234rpx;
 		padding: 40rpx 46rpx;

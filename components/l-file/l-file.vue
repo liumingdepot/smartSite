@@ -63,7 +63,7 @@ export default {
 		*/
 		appChooseFile({currentWebview,url,name = 'file',header,...formData} = {}) {
 			// #ifdef APP-PLUS
-				let wv = plus.webview.create("","/hybrid/html/index.html",{
+				let wv = plus.webview.create("","/hybrid/html/file/index.html",{
 					'uni-app': 'none', //不加载uni-app渲染层框架，避免样式冲突
 					top: 0,
 					height: '100%',
@@ -74,7 +74,7 @@ export default {
 					formData,
 					key: name,
 				});
-				wv.loadURL("/hybrid/html/index.html")
+				wv.loadURL("/hybrid/html/file/index.html")
 				currentWebview.append(wv);
 				wv.overrideUrlLoading({mode:'reject'},(e)=>{
 					let {fileName,id} = this.getRequest(e.url);

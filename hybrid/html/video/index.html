@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta name="renderer" content="webkit">
+    <title>EZOPEN播放协议</title>
+    <script src="./js/ezuikit.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .hint {
+            font-size: 14px;
+            line-height: 3em;
+            color: gray;
+        }
+
+        #url,
+        #url2,
+        #accessToken {
+            width: 100%;
+        }
+
+        .btn-container {
+            margin: 10px;
+        }
+
+        .normal {
+            color: green;
+            margin: 5px;
+        }
+
+        .error {
+            color: red;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app"></div>
+<buttom></buttom>
+
+<script>
+    //开始初始化监控地址
+    var playr = new EZUIKit.EZUIKitPlayer({
+        id: 'app',
+        url: 'ezopen://open.ys7.com/E51738772/1.hd.live',
+        autoplay: true,
+        accessToken: "at.dhl5063v60wq44ibbvdlegzn7tnmbv08-5j2i2uqgfu-0x4imur-5qy82oich",
+        decoderPath: '',
+        width: window.outerWidth,
+        height: window.outerWidth / 1920 * 1080 + 48 * 2,
+        template: 'security', // simple - 极简版;standard-标准版;security - 安防版(预览回放);voice-语音版；
+        autoplay: true,
+    });
+	console.log(playr);
+	playr.fullScreen()
+</script>
+</body>
+</html>

@@ -38,7 +38,9 @@
 			"style": {}
 		}, {
 			"path": "pages/alarm/alarm",
-			"style": {}
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}, {
 			"path": "pages/health/health",
 			"style": {
@@ -59,8 +61,19 @@
 			"style": {
 				"navigationStyle": "custom"
 			}
-		}
-	],
+		},{
+            "path" : "pages/drone/drone",
+            "style" : {
+				"navigationBarTitleText": "无人机"
+			}
+        }
+        ,{
+            "path" : "pages/attendance/attendance",
+            "style" : {
+				"navigationBarTitleText": "人员考勤列表"
+			}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
