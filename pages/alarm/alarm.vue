@@ -34,38 +34,6 @@ export default {
 	data() {
 		return {
 			alarmArr:[],
-			moke: [
-				{
-					alarmTime: '2019-07-17 09:08:44',
-					channelName: '2',
-					channelType: '15622',
-					deviceName: '安全帽IVSS',
-				},
-				{
-					alarmTime: '2019-07-13 09:08:44',
-					channelName: '3',
-					channelType: '15622',
-					deviceName: '安全帽123',
-				},
-				{
-					alarmTime: '2019-07-11 09:08:44',
-					channelName: '33',
-					channelType: '15622',
-					deviceName: '安全帽456',
-				},
-				{
-					alarmTime: '2019-07-07 02:08:44',
-					channelName: '22',
-					channelType: '15622',
-					deviceName: '安全帽789',
-				},
-				{
-					alarmTime: '2019-07-14 03:08:44',
-					channelName: '11',
-					channelType: '15622',
-					deviceName: '安全帽IVSS',
-				}
-			]
 		};
 	},
 	created() {
@@ -74,11 +42,7 @@ export default {
 	methods: {
 		async getAlarm() {
 			const alarmArr = await alarm();
-			if(alarmArr.length>0){
-				this.alarmArr = alarmArr
-			}else{
-				this.alarmArr = this.moke
-			}
+			this.alarmArr = alarmArr
 		},
 		back(){
 			uni.navigateBack()

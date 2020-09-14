@@ -8,11 +8,10 @@ export const axios = ({
 	method,
 	header
 }) => {
-	const dataValue = { ...data
-	}
+	const dataValue = { ...data}
 	for (let key in dataValue) {
 		//如果参数为空 不传此参数
-		if (dataValue[key] === undefined || dataValue[key] === null || dataValue[key] === 0) {
+		if (dataValue[key] === undefined || dataValue[key] === null) {
 			delete dataValue[key]
 		}
 	}
@@ -79,10 +78,15 @@ export const post = async ({
 		})
 		return
 	}else{
+		console.log(res.data.code == -1 && res.data.msg == 'token error');
 		if(res.data.code == -1 && res.data.msg == 'token error'){
-			uni.reLaunch({
-			    url: '/pages/login/login.vue'
+			uni.navigateBack({
+			    delta: 9
 			});
+			uni.showToast({
+				title: '账户已在别处登陆，请重新登录',
+				icon:'none'
+			})
 		}
 		return res.data
 	}

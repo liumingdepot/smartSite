@@ -64,7 +64,7 @@
 		},{
             "path" : "pages/drone/drone",
             "style" : {
-				"navigationBarTitleText": "无人机"
+				"navigationBarTitleText": "无人机监测"
 			}
         }
         ,{
@@ -73,11 +73,33 @@
 				"navigationBarTitleText": "人员考勤列表"
 			}
         }
+        ,{
+            "path" : "pages/task-reply/task-reply",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/surroundings/surroundings",
+            "style" : {
+				"navigationBarTitleText": "地面扬尘监测"
+			}
+        }
+        ,{
+            "path" : "pages/webWiew/webWiew",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/video2/video2",
+            "style" : {
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"pageOrientation":"auto"
 	}
 }

@@ -1,34 +1,34 @@
 <template>
 	<view class="attendance">
-		<view class="header">
-			<view>姓名</view>
-			<view>签到</view>
-			<view>考勤情况</view>
-		</view>
-		<view class="box">
-			<view class="list" v-for="(item, index) in dataList" :key="index">
-				<view class="name">{{ item.personName }}</view>
-				<view class="Sign">
-					<view style="padding-bottom: 20rpx;" class="item">
-						<view style="padding-right: 20rpx;">签到</view>
-						<view :style="{ color: item.checkInStatus == '正常签入' ? '#333' : '#f30' }">{{ item.checkInTime }}</view>
-					</view>
-					<view class="item">
-						<view style="padding-right: 20rpx;">签退</view>
-						<view :style="{ color: item.checkOutStatus == '正常签出' ? '#333' : '#f30' }">{{ item.checkOutTime }}</view>
-					</view>
+		<block v-for="(item, index) in dataList" :key="index" class="item">
+			<view class="item" @tap="changeItem(item,index)">
+				<image style="width: 30rpx;height: 30rpx;" src="/static/icon/jia.png" mode=""></image>
+				<image src="/static/icon/renshu.png" mode=""></image>
+				<view>{{ item.groupName }}</view>
+				<view class="text">
+					<view style="color:#387ce0;font-weight: normal;">{{ item.curNum }}</view>
+					/
+					<view style="color:#666;font-weight: normal;">{{ item.totalNum }}</view>
 				</view>
-				<view class="tag">
-					<view class="failure" v-if="item.result == '异常'">{{ item.result }}</view>
-					<view class="success" v-else>{{ item.result }}</view>
+				<view :style="{ width: item.width }" class="line"></view>
+				<view class="line2"></view>
+			</view>
+			<view class="box" v-for="(val, i) in item.list" :key="i" v-if="item.show">
+				<view style="font-weight: bold;">{{ val.personName }}</view>
+				<view style="text-align: left;">进场{{ val.checkInTime||'--' }}</view>
+				<view style="text-align: left;">离场{{ val.checkOutTime||'--' }}</view>
+				<view class="text">
+					<view v-if="val.checkOutTime" class="cc">离场</view>
+					<view v-else-if="val.checkInTime" class="ww">进场</view>
+					<view v-else class="hh">离场</view>
 				</view>
 			</view>
-		</view>
+		</block>
 	</view>
 </template>
 
 <script>
-import { getAttendance } from './server.js';
+import { getGroup } from './server.js';
 export default {
 	data() {
 		return {
@@ -36,12 +36,28 @@ export default {
 		};
 	},
 	async onLoad() {
-		const dataList = await getAttendance();
+		const info = uni.getSystemInfoSync();
+		const dataList = await getGroup();
 		this.dataList = dataList.map(val => {
-			val.checkInTime = val.checkInTime ? val.checkInTime.split(' ')[1] : '-';
-			val.checkOutTime = val.checkOutTime ? val.checkOutTime.split(' ')[1] : '-';
+			val.width = (val.curNum / val.totalNum) * info.screenWidth + 'px';
+			val.show = false
 			return val;
 		});
+	},
+	methods:{
+		changeItem(item,index){
+			if(item.show){
+				item.show = false
+			}else{
+				for(let val of this.dataList){
+					if(val.groupName == item.groupName){
+						val.show = true
+					}else{
+						val.show = false
+					}
+				}
+			}
+		}
 	}
 };
 </script>
@@ -49,60 +65,74 @@ export default {
 <style lang="scss">
 .attendance {
 	width: 750rpx;
-	.header {
+	.item {
+		display: grid;
+		line-height: 118rpx;
 		width: 100%;
-		height: 100rpx;
-		z-index: 99;
-		position: fixed;
-		background-color: #fff;
-		top: 0;
-		left: 0;
+		padding: 0 14rpx;
+		box-sizing: border-box;
+		align-items: center;
+		grid-template-columns: 54rpx 54rpx 480rpx auto;
+		font-size: 34rpx;
+		font-weight: bold;
+		position: relative;
+		image {
+			width: 42rpx;
+			height: 42rpx;
+		}
+		.text {
+			display: flex;
+			align-items: center;
+			font-size: 30rpx;
+		}
+		.line {
+			position: absolute;
+			bottom: 0;
+			height: 2rpx;
+			background-color: #387ce0;
+			z-index: 99;
+		}
+		.line2 {
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+			height: 2rpx;
+			background-color: #e5e5e5;
+			z-index: 0;
+		}
+	}
+	.box {
+		height: 90rpx;
 		display: grid;
 		align-items: center;
 		text-align: center;
-		grid-template-columns: 1fr 1fr 1fr;
-		border-bottom: 2rpx solid #e4ecf8;
-	}
-	.box {
-		margin-top: 100rpx;
-		.list {
-			width: 100%;
-			height: 174rpx;
-			display: grid;
-			align-items: center;
-			text-align: center;
-			grid-template-columns: 1fr 1fr 1fr;
-			border-bottom: 2rpx solid #e4ecf8;
-			.name {
-				font-size: 36rpx;
-				font-weight: bolder;
+		grid-template-columns: 208rpx 1fr 1fr 1fr;
+		.text{
+			.ww {
+				width: 108rpx;
+				height: 46rpx;
+				line-height: 46rpx;
+				text-align: center;
+				border-radius: 23rpx;
+				background-color: #dae7fa;
+				color: #74a4e9;
 			}
-			.Sign {
-				color: #a5a5a5;
-				.item{
-					display: flex;
-				}
+			.cc {
+				width: 108rpx;
+				height: 46rpx;
+				line-height: 46rpx;
+				text-align: center;
+				border-radius: 23rpx;
+				background-color: #e6e6e6;
+				color: #333;
 			}
-			.tag {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				.failure {
-					width: 148rpx;
-					height: 44rpx;
-					line-height: 44rpx;
-					border-radius: 22rpx;
-					color: #ff3300;
-					background-color: #ffd6cc;
-				}
-				.success {
-					width: 148rpx;
-					height: 44rpx;
-					line-height: 44rpx;
-					border-radius: 22rpx;
-					color: #50a516;
-					background-color: #edf9e7;
-				}
+			.hh{
+				width: 108rpx;
+				height: 46rpx;
+				line-height: 46rpx;
+				text-align: center;
+				border-radius: 23rpx;
+				background-color: #e6e6e6;
 			}
 		}
 	}

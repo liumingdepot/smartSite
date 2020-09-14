@@ -1,17 +1,26 @@
 <template>
 	<view class="drone">
 		<view class="header"><image src="/static/image/ww.png" mode=""></image></view>
-		<view class="grid">
-			<view v-for="(item, index) in opts" :key="item.name" class="box">
-				<view class="value">{{ item.value }}</view>
-				<view class="name" :style="{color:item.color}">
-					<text :style="{'background-color': item.color}" class="shu"></text>
-					<text>{{ item.name }}</text>
+		<view class="charts">
+			<view class="title2"><view class="wpj">雾泡机数据</view></view>
+			<view class="body3" @tap="show = true">
+				<image style="width: 40rpx;height: 40rpx;" src="/static/icon/date.png" mode=""></image>
+				<view>选择日期</view>
+				<image style="margin-left: 10rpx;width: 36rpx;height: 36rpx;transform: rotate(-90deg);" src="/static/icon/back.png" mode=""></image>
+			</view>
+			<view class="grid">
+				<view v-for="(item, index) in opts" :key="item.name" class="box">
+					<view class="value">{{ item.value }}</view>
+					<view class="name" :style="{ color: item.color }">
+						<text :style="{ 'background-color': item.color }" class="shu"></text>
+						<text>{{ item.name.toUpperCase() == 'VOCS' ? 'VOCs' : item.name.toUpperCase() }}</text>
+					</view>
 				</view>
 			</view>
+			<v-charts chartType="line" v-if="opts1" :opts="opts1" canvasId="charts1" :cWidth="cWidth" :cHeight="cHeight" />
+			<v-charts chartType="line" v-if="opts2" :opts="opts2" canvasId="charts2" :cWidth="cWidth" :cHeight="cHeight" />
 		</view>
-		<v-charts chartType="line" v-if="opts1" :opts="opts1" canvasId="charts1" :cWidth="cWidth" :cHeight="cHeight" />
-		<v-charts chartType="line" v-if="opts2" :opts="opts2" canvasId="charts2" :cWidth="cWidth" :cHeight="cHeight" />
+		<u-calendar v-model="show" mode="range" @change="changeDate"></u-calendar>
 	</view>
 </template>
 
@@ -30,18 +39,24 @@ export default {
 			cHeight: 0,
 			opts: [],
 			opts1: null,
-			opts2: null
+			opts2: null,
+			show: false,
 		};
 	},
 	onLoad() {
-		const info = uni.getSystemInfoSync()
-		this.cWidth = info.screenWidth
-		this.cHeight = info.screenWidth*2/3
+		const info = uni.getSystemInfoSync();
+		this.cWidth = info.screenWidth - 40;
+		this.cHeight = (info.screenWidth * 2) / 3;
 		this.getDrone();
 	},
 	methods: {
-		async getDrone() {
-			const arr = await getUdpData();
+		changeDate(value){
+			this.opts1 = null
+			this.opts2 = null
+			this.getDrone(value.startDate,value.endDate)
+		},
+		async getDrone(stime= '',etime='') {
+			const arr = await getUdpData(stime,etime);
 			const series1 = [{ name: 'pm1', data: [], color: '#03c7e5' }, { name: 'pm10', data: [], color: '#b946f0' }, { name: 'pm25', data: [], color: '#4291fd' }];
 			const series2 = [{ name: 'no2', data: [], color: '#82ff45' }, { name: 'vocs', data: [], color: '#ff45a1' }];
 			const categories = [];
@@ -76,7 +91,11 @@ export default {
 	}
 };
 </script>
-
+<style>
+page {
+	background: #e5e5e5;
+}
+</style>
 <style scoped lang="scss">
 .drone {
 	width: 750rpx;
@@ -88,11 +107,51 @@ export default {
 		justify-content: center;
 		border-top: 2rpx solid #e4ecf8;
 		border-bottom: 2rpx solid #e4ecf8;
+		background-color: #fff;
 		image {
 			width: 374rpx;
 			height: 285rpx;
 		}
 	}
+	.charts {
+		margin: 20rpx 26rpx;
+		background-color: #fff;
+		border-radius: 12rpx;
+		.body3 {
+			margin: 0 24rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-top: 2rpx solid #e5e5e5;
+			height: 126rpx;
+			image {
+				width: 44rpx;
+				height: 44rpx;
+				margin-right: 20rpx;
+			}
+		}
+		.title2 {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 0 24rpx;
+			height: 80rpx;
+			.wpj {
+				display: flex;
+				align-items: center;
+				&::before {
+					content: '';
+					display: block;
+					width: 8rpx;
+					height: 28rpx;
+					background: #4484e1;
+					border-radius: 4rpx;
+					margin-right: 10rpx;
+				}
+			}
+		}
+	}
+	
 	.grid {
 		width: 100%;
 		display: grid;
@@ -104,12 +163,12 @@ export default {
 				font-size: 34rpx;
 				line-height: 90rpx;
 			}
-			.name{
+			.name {
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				font-size: 26rpx;
-				.shu{
+				.shu {
 					width: 10rpx;
 					height: 20rpx;
 					border-radius: 5rpx;

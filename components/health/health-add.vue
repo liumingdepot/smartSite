@@ -164,6 +164,9 @@
 			//手术
 			changeSurgery(surgeryshow) {
 				this.surgeryshow = surgeryshow
+				if(diseaseshow == '无'){
+					this.surgery = []
+				}
 			},
 			addSurgery() {
 				this.surgery.push({
@@ -180,11 +183,11 @@
 					//血型
 					bloodtype: this.blood,
 					isallergy:this.allergyshow,
-					allergy: this.allergy.join(),
+					allergy: this.allergyshow == '有' ? this.allergy.join() : null,
 					isdisease: this.diseaseshow,
-					disease: this.disease.join(),
+					disease: this.diseaseshow == '有' ? this.disease.join(): null,
 					isoperation:this.surgeryshow,
-					operationJson: this.surgery,
+					operationJson: this.surgeryshow == '有' ? this.surgery: [],
 				}
 				this.$emit('appSave',healJson)
 			}

@@ -42,9 +42,6 @@
 		},
 		methods: {
 			applogin() {
-				uni.showLoading({
-					title:'加载中'
-				})
 				login({
 					username:this.username,
 					password:this.password
@@ -63,7 +60,6 @@
 						uni.navigateTo({
 							url:'/pages/index/index',
 						})
-						uni.hideLoading()
 					}else{
 						uni.showToast({
 							title:'用户名或密码错误，请稍后再试',

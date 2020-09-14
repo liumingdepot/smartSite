@@ -39,13 +39,14 @@
 				const ob = {
 					token:uni.getStorageSync('token'),
 					userid:uni.getStorageSync('userid'),
-					workid:this.healJson.workid,
+					workid:uni.getStorageSync('userid'),
 					healJson
 				}
 				if(this.healJson.healthid){
 					ob.healJson.healthid = this.healJson.healthid
 				}
 				updateHeal(ob).then(res=>{
+					console.log(res)
 					if(res.code == 1){
 						this.initData()
 					}

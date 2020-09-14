@@ -1,9 +1,8 @@
 <template>
 	<view class="monitors">
-		<!-- <web-view src="/hybrid/html/three/index.html"></web-view> -->
 		<view class="item">
 			<view class="list" v-for="(item, index) in monitorsVideo" :key="index" @tap="navTo(item)">
-				<view class="img"><image :srm="item.img" style="width: 100%;height: 100%;" alt=""></image></view>
+				<view class="img"><image :src="item.img" style="width: 100%;height: 100%;" alt=""></image></view>
 				<view style="padding-left: 20rpx;">{{ item.name }}</view>
 			</view>
 		</view>
@@ -24,13 +23,12 @@ export default {
 	methods: {
 		navTo(val) {
 			uni.navigateTo({
-				url: `/pages/video/video?deviceSerial=${val.deviceSerial}&channelNo=${val.channelNo}&name=${val.name}`
+				url: `/pages/video/video?deviceSerial=${val.deviceSerial}&channelNo=${val.channelNo}&name=${val.name}&accessToken=${val.accessToken}`
 			});
 		},
 		async initData() {
 			uni.showLoading({
-				title:'加载中。',
-				icon:'none'
+				title:'加载中',
 			})
 			const accessToken = await getAccessToken();
 			const monitorsVideo = await getList(accessToken);
@@ -41,7 +39,8 @@ export default {
 						this.monitorsVideo.push({
 							...item,
 							name:val.tdmc,
-							img:val.imgurl
+							img:val.imgurl,
+							accessToken:accessToken
 						})
 					}
 				}

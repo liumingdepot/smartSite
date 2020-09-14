@@ -2,8 +2,8 @@
 	<view class="task">
 		<view class="header">
 			<image class="img" src="/static/image/back.png" @tap="back"></image>
-			<view class="title">新任务</view>
-			<view class="release" @tap="submit">发布</view>
+			<view class="title">任务回复</view>
+			<view class="release" @tap="submit">回复</view>
 		</view>
 		<textarea v-model="taskcontent" auto-height placeholder="请输入发布的内容" class="textarea"></textarea>
 		<view class="getImg">
@@ -20,31 +20,12 @@
 				</view>
 			</view>
 		</view>
-		<view class="contact" @tap="addContactPerson">
-			<image class="contact-img" src="/static/image/contact.png"></image>
-			<view>添加发送人</view>
-		</view>
-		<view class="box">
-			<view v-for="(item,index) in senduserValue" :key="index" class="item">{{item.split(',')[1]}}</view>
-		</view>
-		<uni-popup ref="popup" type="center" :maskClick="false">
-			<view class="popup">
-				<checkbox-group @change="checkboxChange">
-					<label class="item" v-for="item in senduser" :key="item.userid">
-						<checkbox :value="item.userid + ',' + item.username" :checked="senduserValue.includes(item.userid + ',' + item.username)"/>{{item.username}}-{{item.userrole}}
-					</label>
-				</checkbox-group>
-				<view style="display: flex;justify-content: flex-end;">
-					<view class="release" @tap="clonepopup">确认</view>
-				</view>
-			</view>
-		</uni-popup>
 	</view>
 </template>
 
 <script>
 	import {
-		taskAppAdd,
+		taskAppHfadd,
 		taskAppFileid
 	} from './server.js'
 	import {
@@ -63,7 +44,8 @@
 				acceptusername: []
 			};
 		},
-		async onLoad() {
+		async onLoad(obj) {
+			this.taskid = obj.taskid
 			this.fileid = await taskAppFileid()
 		},
 		methods: {
@@ -93,41 +75,23 @@
 					}
 				});
 			},
-			addContactPerson() {
-				this.$refs.popup.open()
-			},
-			checkboxChange(e) {
-				this.senduserValue = e.target.value
-			},
-			clonepopup() {
-				const acceptuserid = []
-				const acceptusername = []
-				for (let item of this.senduserValue) {
-					acceptuserid.push(item.split(',')[0])
-					acceptusername.push(item.split(',')[1])
-				}
-				this.acceptuserid = acceptuserid
-				this.acceptusername = acceptusername
-				this.$refs.popup.close()
-			},
 			submit() {
-				if(!this.taskcontent || this.imgs.length == 0 || this.senduserValue.length == 0){
+				if(!this.taskcontent || this.imgs.length == 0){
 					uni.showToast({
 						title:'请填写完整',
 						icon:"none"
 					})
 					return
 				}
-				taskAppAdd({
+				taskAppHfadd({
+					taskid:this.taskid,
 					taskcontent: this.taskcontent,
 					fileid: this.fileid,
-					taskimg: this.taskimg.join(','),
-					acceptuserid: this.acceptuserid.join(','),
-					acceptusername: this.acceptusername.join(','),
+					taskimg: this.taskimg.join(',')
 				}).then(res => {
 					if (res.code == 1) {
 						uni.showToast({
-							title: '添加成功'
+							title: '回复成功'
 						})
 					}
 					this.back()

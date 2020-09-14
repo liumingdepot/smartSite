@@ -5,7 +5,6 @@
 			<view class="title">新文件</view>
 			<view></view>
 		</view>
-		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 		
 		<view class="input">
 			<input v-model="filename" :disabled="show" placeholder="请输入文件名称"/>
@@ -25,7 +24,7 @@
 			<view class="popup">
 				<checkbox-group @change="checkboxChange">
 					<label class="item" v-for="item in senduser" :key="item.userid">
-						<checkbox :value="item.userid + ',' + item.username" />{{item.username}}-{{item.userrole}}
+						<checkbox :value="item.userid + ',' + item.username" :checked="senduserValue.includes(item.userid + ',' + item.username)"/>{{item.username}}-{{item.userrole}}
 					</label>
 				</checkbox-group>
 				<view style="display: flex;justify-content: flex-end;">
@@ -33,6 +32,8 @@
 				</view>
 			</view>
 		</uni-popup>
+		
+		<l-file ref="lFile" @up-success="onSuccess"></l-file>
 	</view>
 </template>
 

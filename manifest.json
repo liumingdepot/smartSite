@@ -113,17 +113,17 @@
     "uniStatistics" : {
         "enable" : false
     },
-	"h5" : {
-	    "devServer" : {
-	         "port" : 8000, //端口号
-	          "disableHostCheck" : true,
-	          "proxy" : {
-	              "/api" : {
-						"target" : "http://113.140.66.229:11016", //目标接口域名
-	                   "changeOrigin" : true,  //是否跨域
-	                   "secure" : false  // 设置支持https协议的代理
-	             }
-	        }
-	    }
-	}
+    "h5" : {
+        "devServer" : {
+            "port" : 8000, //端口号
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/api" : {
+                    "target" : "http://113.140.66.229:11016", //目标接口域名
+                    "changeOrigin" : true, //是否跨域
+                    "secure" : false // 设置支持https协议的代理
+                }
+            }
+        }
+    }
 }
