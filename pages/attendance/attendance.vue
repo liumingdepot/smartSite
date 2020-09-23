@@ -36,15 +36,26 @@ export default {
 		};
 	},
 	async onLoad() {
-		const info = uni.getSystemInfoSync();
-		const dataList = await getGroup();
-		this.dataList = dataList.map(val => {
-			val.width = (val.curNum / val.totalNum) * info.screenWidth + 'px';
-			val.show = false
-			return val;
-		});
+		uni.showLoading({
+			title:'加载中'
+		})
+		this.getlist()
 	},
 	methods:{
+		async getlist(){
+			const dataList = await getGroup();
+			if(dataList.length == 0){
+				this.getlist()
+			}else{
+				const info = uni.getSystemInfoSync();
+				this.dataList = dataList.map(val => {
+					val.width = (val.curNum / val.totalNum) * info.screenWidth + 'px';
+					val.show = false
+					return val;
+				});
+				uni.hideLoading()
+			}
+		},
 		changeItem(item,index){
 			if(item.show){
 				item.show = false

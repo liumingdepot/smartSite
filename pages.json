@@ -55,7 +55,9 @@
 			}
 		}, {
 			"path": "pages/video/video",
-			"style": {}
+			"style": {
+				"navigationStyle": "custom"
+			}
 		}, {
 			"path": "pages/document-add/document-add",
 			"style": {

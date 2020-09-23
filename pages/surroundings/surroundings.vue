@@ -5,7 +5,7 @@
 			<view class="title">
 				<view class="wpj">雾泡机管理</view>
 				<u-switch size="36" inactive-color="#d6d6d6" @change="changeSwitch" v-model="value1" :loading="loading" v-if="!cutover"></u-switch>
-				<view v-if="cutover">{{value1?'开启':'关闭'}}</view>
+				<view v-if="cutover">{{ value1 ? '开启' : '关闭' }}</view>
 			</view>
 			<view class="body2" v-if="cutover">
 				<view class="body2Box">
@@ -24,12 +24,10 @@
 		</view>
 		<!-- <view class="header"><image src="/static/image/qqq.png" mode=""></image></view> -->
 		<view class="charts">
-			<view class="title2">
-				<view class="wpj">雾泡机数据</view>
-			</view>
+			<view class="title2"><view class="wpj">雾泡机数据</view></view>
 			<view class="body3" @tap="show = true">
 				<image style="width: 40rpx;height: 40rpx;" src="/static/icon/date.png" mode=""></image>
-				<view>选择日期</view>
+				<view>{{ str }}</view>
 				<image style="margin-left: 10rpx;width: 36rpx;height: 36rpx;transform: rotate(-90deg);" src="/static/icon/back.png" mode=""></image>
 			</view>
 			<view class="grid">
@@ -49,7 +47,7 @@
 
 <script>
 import vCharts from '@/components/u-charts/component.vue';
-import { getUdpData, getWpjStatus,manualpw,autopw } from './server.js';
+import { getUdpData, getWpjStatus, manualpw, autopw } from './server.js';
 export default {
 	components: {
 		vCharts
@@ -65,6 +63,7 @@ export default {
 			value2: 0,
 			loading: false,
 			show: false,
+			str: ''
 		};
 	},
 	onLoad() {
@@ -80,9 +79,16 @@ export default {
 			this.value1 = data.sw == 'on' ? 1 : 0;
 			this.value2 = data.value / 3;
 		},
-		async getDrone(stime= '',etime='') { 
-			
-			const arr = await getUdpData(stime,etime);
+		async getDrone(stime = '', etime = '') {
+			const res = await getUdpData(stime, etime);
+			res.stime = res.stime.split('-').slice(1).join('-')
+			res.etime = res.etime.split('-').slice(1).join('-')
+			if (res.stime == res.etime) {
+				this.str = res.stime;
+			} else {
+				this.str = res.stime + ' 至 ' + res.etime;
+			}
+			const arr = res.data;
 			const series = [
 				{ name: 'TSP', data: [], color: '#03c7e5' },
 				{ name: 'PM10', data: [], color: '#b946f0' },
@@ -143,47 +149,47 @@ export default {
 		changeCutover() {
 			this.cutover = !this.cutover;
 		},
-		async changeSlider(){
+		async changeSlider() {
 			uni.showLoading({
-				title:'修改中！！'
-			})
-			const num = this.value2 * 3
-			const res = await autopw(num)
-			if(res.cmd1 == 'success' && res.cmd2 == 'success'){
-			    this.getWpjStatus()
+				title: '修改中！！'
+			});
+			const num = this.value2 * 3;
+			const res = await autopw(num);
+			if (res.cmd1 == 'success' && res.cmd2 == 'success') {
+				this.getWpjStatus();
 				uni.showToast({
-					title:'修改成功！',
-					icon:'none'
-				})
-				uni.hideLoading()
-			}else{
+					title: '修改成功！',
+					icon: 'none'
+				});
+				uni.hideLoading();
+			} else {
 				uni.showToast({
-					title:'修改失败,请重试！',
-					icon:'none'
-				})
-				uni.hideLoading()
+					title: '修改失败,请重试！',
+					icon: 'none'
+				});
+				uni.hideLoading();
 			}
 		},
 		async changeSwitch(value) {
-			this.loading = true
-			const res = await manualpw(+value)
-			if(res.cmd1 == 'success' && res.cmd2 == 'success'){
-			    this.getWpjStatus()
-				this.loading = false
+			this.loading = true;
+			const res = await manualpw(+value);
+			if (res.cmd1 == 'success' && res.cmd2 == 'success') {
+				this.getWpjStatus();
+				this.loading = false;
 				uni.showToast({
-					title:'修改成功！',
-					icon:'none'
-				})
-			}else{
+					title: '修改成功！',
+					icon: 'none'
+				});
+			} else {
 				uni.showToast({
-					title:'修改失败,请重试！',
-					icon:'none'
-				})
+					title: '修改失败,请重试！',
+					icon: 'none'
+				});
 			}
 		},
-		changeDate(value){
-			this.opts = null
-			this.getDrone(value.startDate,value.endDate)
+		changeDate(value) {
+			this.opts = null;
+			this.getDrone(value.startDate, value.endDate);
 		}
 	}
 };

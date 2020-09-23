@@ -1,7 +1,5 @@
 <template>
-	<view>
-		<web-view v-if="url" :src="url"></web-view>
-	</view>
+	<view id="video"><web-view class="web" v-if="url" :src="url"></web-view></view>
 </template>
 
 <script>
@@ -11,21 +9,33 @@ export default {
 			url: ''
 		};
 	},
+	onUnload() {
+		// #ifdef APP-PLUS
+		plus.screen.lockOrientation('portrait-primary');
+		uni.showLoading();
+		setTimeout(() => {
+			uni.hideLoading();
+		}, 1200);
+		// #endif
+	},
 	onLoad(obj) {
-		const { deviceSerial, channelNo, name,accessToken } = obj;
-		this.url = `/hybrid/html/video/index.html?deviceSerial=${deviceSerial}&channelNo=${channelNo}&name=${name}&accessToken=${accessToken}`
+		uni.showLoading();
+		// #ifdef APP-PLUS
+		setTimeout(() => {
+			const { deviceSerial, channelNo, name, accessToken } = obj;
+			const url = 'https://open.ys7.com/ezopen/h5/iframe_se?url=ezopen://open.ys7.com/' + deviceSerial + '/';
+			const par = channelNo + '.hd.live&autoplay=1&audio=1&accessToken=' + accessToken;
+			this.url = url + par;
+			uni.hideLoading();
+			plus.screen.lockOrientation('landscape-primary');
+		}, 1200);
+		// #endif
 	}
 };
 </script>
 
-<style lang="scss" scoped>
-.video {
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	.item {
-		width: 100vw;
-	}
+<style>
+#video {
+	transform: rotate(30deg);
 }
 </style>

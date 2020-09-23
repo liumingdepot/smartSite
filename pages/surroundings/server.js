@@ -2,14 +2,13 @@ import {post,get} from '@/common/axios.js'
 
 
 export const getUdpData =  async (stime = '',etime = '') =>{
-	const res = await post({
+	return await post({
 		url:'visualzation/getToDayDataList',
 		data:{
 			stime,
 			etime
 		}
 	})
-    return res.data
 }
 
 

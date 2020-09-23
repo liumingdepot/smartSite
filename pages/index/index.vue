@@ -5,9 +5,9 @@
 			<view class="box">
 				<view class="duration">项目工期</view>
 				<view class="date">{{ project.protime }}</view>
-				<view class="time">{{ project.curday || 0 }}/{{ project.totalday || 0 }}</view>
+				<view class="time">{{ project.curday || 0 }}/{{ project.totalday || 0 }}天</view>
 			</view>
-			<progress class="progress" :percent="20" stroke-width="10" backgroundColor="#5f95e4" activeColor="#4ddda3" />
+			<progress class="progress" :percent="parseInt(project.curday/project.totalday * 100)" stroke-width="10" backgroundColor="#5f95e4" activeColor="#4ddda3" />
 		</view>
 		<!-- 头部轮播 -->
 		<view class="environmental">
@@ -73,7 +73,7 @@
 								</view>
 								<view style="padding: 8rpx 12rpx;color: #fff;background-color: #a5b8e2;">工程总人数</view>
 							</view>
-							<view style="width: 4rpx;height: 200rpx;background-color: #e5e5e5;"></view>
+							<view style="width: 1rpx;height: 200rpx;background-color: #e5e5e5;"></view>
 							<view>
 								<view style="color: #26bf82;margin-bottom: 30rpx;text-align: center;">
 									<text style="font-size: 50rpx;">{{ attendance.enter }}</text>
@@ -122,8 +122,11 @@
 				<view class="right" @tap="navTo('/pages/monitor/monitor')">更多</view>
 			</wiew>
 			<view class="scroll">
-				<view class="img" v-for="(item, index) in monitors" :key="index" @tap="navToVideo(item)">
-					<image :src="item.img" style="width: 100%;height: 100%;" alt=""></image>
+				<view class="img" @tap="navToVideo(1)">
+					<image src="/static/image/aa1.png" style="width: 100%;height: 100%;" alt=""></image>
+				</view>
+				<view class="img" @tap="navToVideo(2)">
+					<image src="/static/image/aa2.png" style="width: 100%;height: 100%;" alt=""></image>
 				</view>
 			</view>
 		</view>
@@ -172,7 +175,7 @@ export default {
 			imglist: [],
 			showBanner: 1,
 			videoSrc: '',
-			showLoading: true
+			accessToken:''
 		};
 	},
 	onLoad() {
@@ -197,38 +200,24 @@ export default {
 			project().then(data => {
 				this.project = data;
 			});
-			// //
-			// getAccessToken().then(accessToken=>{
-			// 	getList(accessToken).then(monitorsVideo=>{
-			// 		getVideoImg().then(videoImg=>{
-			// 			for (let item of monitorsVideo) {
-			// 				for (let val of videoImg) {
-			// 					if (val.tdh == item.channelNo) {
-			// 						this.monitors.push({
-			// 							...item,
-			// 							name: val.tdmc,
-			// 							img: val.imgurl,
-			// 							accessToken: accessToken
-			// 						});
-			// 					}
-			// 				}
-			// 			}
-			// 			this.monitors.length = 2;
-			// 		});
-			// 	});
-			// });
 			attendance().then(attendance => {
 				this.attendance = attendance;
 			});
+			getAccessToken().then(accessToken=>{
+				this.accessToken = accessToken
+			})
 		},
 		reply(item) {
 			uni.navigateTo({
 				url: '/pages/task-reply/task-reply?taskid=' + item.md.taskid
 			});
 		},
-		navToVideo(val) {
+		navToVideo(index) {
+			const channelNo = index == 1 ? 1 : 2
+			const name = index == 1 ? '办公区大门' : '污水池'
+			const deviceSerial = 'E51738772'
 			uni.navigateTo({
-				url: `/pages/video/video?deviceSerial=${val.deviceSerial}&channelNo=${val.channelNo}&name=${val.name}&accessToken=${val.accessToken}`
+				url: `/pages/video/video?deviceSerial=${deviceSerial}&channelNo=${channelNo}&name=${name}&accessToken=${this.accessToken}`
 			});
 		},
 		previewImage(imgs, index) {

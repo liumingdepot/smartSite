@@ -5,16 +5,6 @@ import {
 
 const color = ['#03c7e5', '#b946f0', '#4291fd', '#82ff45', '#ff45a1', '#03c7e5', '#b946f0']
 
-//任务
-export const taskAppList = async () => {
-	return await post({
-		url: 'taskManage/taskApp_list',
-		data: {
-			token: uni.getStorageSync('token'),
-			userid: uni.getStorageSync('userid')
-		}
-	})
-}
 //项目工期
 export const project = async () => {
 	return await post({

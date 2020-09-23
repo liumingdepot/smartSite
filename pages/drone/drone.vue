@@ -5,7 +5,7 @@
 			<view class="title2"><view class="wpj">雾泡机数据</view></view>
 			<view class="body3" @tap="show = true">
 				<image style="width: 40rpx;height: 40rpx;" src="/static/icon/date.png" mode=""></image>
-				<view>选择日期</view>
+				<view>{{str}}</view>
 				<image style="margin-left: 10rpx;width: 36rpx;height: 36rpx;transform: rotate(-90deg);" src="/static/icon/back.png" mode=""></image>
 			</view>
 			<view class="grid">
@@ -41,6 +41,7 @@ export default {
 			opts1: null,
 			opts2: null,
 			show: false,
+			str:''
 		};
 	},
 	onLoad() {
@@ -56,7 +57,16 @@ export default {
 			this.getDrone(value.startDate,value.endDate)
 		},
 		async getDrone(stime= '',etime='') {
-			const arr = await getUdpData(stime,etime);
+			const res = await getUdpData(stime,etime);
+			res.stime = res.stime.split('-').slice(1).join('-')
+			res.etime = res.etime.split('-').slice(1).join('-')
+			if (res.stime == res.etime) {
+				this.str = res.stime;
+			} else {
+				this.str = res.stime + ' 至 ' + res.etime;
+			}
+			const arr = res.data;
+			
 			const series1 = [{ name: 'pm1', data: [], color: '#03c7e5' }, { name: 'pm10', data: [], color: '#b946f0' }, { name: 'pm25', data: [], color: '#4291fd' }];
 			const series2 = [{ name: 'no2', data: [], color: '#82ff45' }, { name: 'vocs', data: [], color: '#ff45a1' }];
 			const categories = [];
